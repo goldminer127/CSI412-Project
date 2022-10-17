@@ -1,7 +1,8 @@
-public interface Device {
-        int Open(String s);
-        void Close(int id);
-        byte[] Read(int id,int size);
-        void Seek(int id,int to);
-        int Write(int id, byte[] data);
+public interface Device
+{
+        int open(String s);
+        void close(int id);
+        byte[] read(int id,int size);
+        void seek(int id,int to);
+        int write(int id, byte[] data);
 }

@@ -1,9 +1,10 @@
-public interface ProcessInterface {
-    int CreateProcess(UserlandProcess myNewProcess, PriorityEnum priority);
+public interface ProcessInterface
+{
+    int createProcess(UserlandProcess myNewProcess, PriorityEnum priority);
 
-    boolean DeleteProcess(int processId);
+    boolean deleteProcess(int processId);
 
-    void Sleep(int milliseconds);
+    void sleep(int milliseconds);
     void run();
 }
 

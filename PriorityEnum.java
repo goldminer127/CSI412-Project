@@ -1,3 +1,4 @@
-public enum PriorityEnum {
+public enum PriorityEnum
+{
     RealTime, Interactive, Background
 }

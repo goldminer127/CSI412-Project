@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class KernelandProcess
 {
     public UserlandProcess process;
@@ -5,4 +7,5 @@ public class KernelandProcess
     public PriorityEnum priority;
     public int timeLeftToSleep;
     public int timeOutStrikes;
+    public ArrayList<Integer> vfsId = new ArrayList<Integer>();
 }

@@ -2,7 +2,7 @@ import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class PriorityScheduler implements OSInterface
+public class PriorityScheduler
 {
     public HashMap<Integer, KernelandProcess> realtimeProcesses = new HashMap<Integer,KernelandProcess>();
     public HashMap<Integer, KernelandProcess> interactiveProcesses = new HashMap<Integer,KernelandProcess>();
@@ -33,6 +33,7 @@ public class PriorityScheduler implements OSInterface
     {
         if(realtimeProcesses.get(processID) != null)
         {
+            removeDevices(realtimeProcesses.get(processID));
             realtimeProcesses.remove(processID);
             return true;
         }
@@ -40,6 +41,7 @@ public class PriorityScheduler implements OSInterface
         {
             if(interactiveProcesses.get(processID) != null)
             {
+                removeDevices(interactiveProcesses.get(processID));
                 interactiveProcesses.remove(processID);
                 return true;
             }
@@ -47,22 +49,35 @@ public class PriorityScheduler implements OSInterface
             {
                 if(backgroundProcesses.get(processID) != null)
                 {
+                    removeDevices(backgroundProcesses.get(processID));
                     backgroundProcesses.remove(processID);
                     return true;
                 }
                 else
                 {
-                    for (KernelandProcess kernelandProcess : sleepingProcesses)
+                    for (int i = 0; i < sleepingProcesses.size(); i++)
                     {
-                        if(kernelandProcess.processID == processID)
+                        KernelandProcess kernelandProcess = sleepingProcesses.get(i);
+                        if(kernelandProcess != null)
                         {
-                            sleepingProcesses.remove(kernelandProcess);
-                            return true;
+                            if(kernelandProcess.processID == processID)
+                            {
+                                removeDevices(sleepingProcesses.get(processID));
+                                sleepingProcesses.remove(kernelandProcess);
+                                return true;
+                            }
                         }
                     }
                     return false;
                 }
             }
+        }
+    }
+    public void removeDevices(KernelandProcess kernelandProcess)
+    {
+        for(int i = 0; i < kernelandProcess.vfsId.size(); i++)
+        {
+            OS.GetOS().close(kernelandProcess.vfsId.get(i));
         }
     }
     public void sleep(int milliseconds)
@@ -202,6 +217,16 @@ public class PriorityScheduler implements OSInterface
                 }
                 if(kernalProcess != null)
                 {
+                    /* Test delete function
+                    if(processIDTracker == 3)
+                    {
+                        System.out.println("purge");
+                        for(int i = 0; i < processIDTracker; i++)
+                        {
+                            deleteProcess(i);
+                        }
+                    }
+                    */
                     runningProcess = kernalProcess;
                     RunResult result = kernalProcess.process.run();
                     sleep(result.millisecondsUsed);

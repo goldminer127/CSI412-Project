@@ -47,4 +47,28 @@ public class OS implements OSInterface
     {
         scheduler.run();
     }
+
+    public int open(String s)
+    {
+        int id = VFS.getVFS().open(s);
+        scheduler.runningProcess.vfsId.add(id);
+        return id;
+    }
+    public void close(int id)
+    {
+        scheduler.runningProcess.vfsId.remove(new Integer(id));
+        VFS.getVFS().close(id);
+    }
+    public byte[] read(int id, int size)
+    {
+        return VFS.getVFS().read(id, size);
+    }
+    public void seek(int id, int to)
+    {
+        VFS.getVFS().seek(id, to);
+    }
+    public int write(int id, byte[] data)
+    {
+        return VFS.getVFS().write(id, data);
+    }
 }
