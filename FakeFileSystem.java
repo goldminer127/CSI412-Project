@@ -6,6 +6,8 @@ public class FakeFileSystem implements Device
 {
     private static FakeFileSystem fileSystem = null;
     public RandomAccessFile[] randomAccessFiles = new RandomAccessFile[10];
+    private long fileWritePointer;
+    private long fileReadPointer;
     
     private FakeFileSystem()
     {

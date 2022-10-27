@@ -10,6 +10,7 @@ public class Pipe2Process extends UserlandProcess
         {
             OS.GetOS().write(fileSystem, Arrays.toString(OS.GetOS().read(pipe, 2)).getBytes());
         }
+        System.out.print(Arrays.toString(OS.GetOS().read(fileSystem, 10)));
         OS.GetOS().close(fileSystem);
 
         RunResult result = new RunResult();
