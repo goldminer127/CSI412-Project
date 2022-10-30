@@ -1,4 +1,3 @@
-public interface OSInterface extends ProcessInterface, Device
+public interface OSInterface extends ProcessInterface, Device, MemoryInterface
 {
-    
 }

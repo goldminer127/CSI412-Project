@@ -18,16 +18,12 @@ public class PriorityScheduler
 
     public int createProcess(UserlandProcess process, PriorityEnum priority)
     {
-        KernelandProcess kernelProcess = new KernelandProcess();
-        int processID = processIDTracker; 
-  
-        kernelProcess.process = process;
-        kernelProcess.processID = processID;
-        kernelProcess.priority = priority;
+        KernelandProcess kernelProcess = new KernelandProcess(process, processIDTracker, priority);
+
         insertProcess(kernelProcess);
  
         processIDTracker++;
-        return processID;
+        return kernelProcess.processID;
     }
     public boolean deleteProcess(int processID)
     {
