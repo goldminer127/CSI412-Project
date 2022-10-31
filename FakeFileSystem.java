@@ -1,13 +1,10 @@
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.util.Arrays;
 
 public class FakeFileSystem implements Device
 {
     private static FakeFileSystem fileSystem = null;
     public RandomAccessFile[] randomAccessFiles = new RandomAccessFile[10];
-    private long fileWritePointer;
-    private long fileReadPointer;
     
     private FakeFileSystem()
     {

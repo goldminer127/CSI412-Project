@@ -15,6 +15,6 @@ public class KernelandProcess
         process = uProcess;
         priority = processPriority;
         processID = id;
-        Arrays.fill(pageArr, -1);
+        Arrays.fill(virtualMemory, -1);
     }
 }

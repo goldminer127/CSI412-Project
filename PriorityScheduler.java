@@ -29,6 +29,7 @@ public class PriorityScheduler
     {
         if(realtimeProcesses.get(processID) != null)
         {
+            OS.GetOS().memoryManagement.freeMemory(realtimeProcesses.get(processID));
             removeDevices(realtimeProcesses.get(processID));
             realtimeProcesses.remove(processID);
             return true;
@@ -37,6 +38,7 @@ public class PriorityScheduler
         {
             if(interactiveProcesses.get(processID) != null)
             {
+                OS.GetOS().memoryManagement.freeMemory(realtimeProcesses.get(processID));
                 removeDevices(interactiveProcesses.get(processID));
                 interactiveProcesses.remove(processID);
                 return true;
@@ -45,6 +47,7 @@ public class PriorityScheduler
             {
                 if(backgroundProcesses.get(processID) != null)
                 {
+                    OS.GetOS().memoryManagement.freeMemory(realtimeProcesses.get(processID));
                     removeDevices(backgroundProcesses.get(processID));
                     backgroundProcesses.remove(processID);
                     return true;
@@ -58,6 +61,7 @@ public class PriorityScheduler
                         {
                             if(kernelandProcess.processID == processID)
                             {
+                                OS.GetOS().memoryManagement.freeMemory(kernelandProcess);
                                 removeDevices(sleepingProcesses.get(processID));
                                 sleepingProcesses.remove(kernelandProcess);
                                 return true;
@@ -223,16 +227,25 @@ public class PriorityScheduler
                         }
                     }
                     */
+                    OS.GetOS().memoryManagement.tlbVirtual = -1;
+                    OS.GetOS().memoryManagement.tlbVirtual = -1;
                     runningProcess = kernalProcess;
-                    RunResult result = kernalProcess.process.run();
-                    sleep(result.millisecondsUsed);
-                    if(result.ranToTimeout == true)
+                    try
                     {
-                        kernalProcess.timeOutStrikes++;
-                        if(kernalProcess.timeOutStrikes == 5)
+                        RunResult result = kernalProcess.process.run();
+                        sleep(result.millisecondsUsed);
+                        if(result.ranToTimeout == true)
                         {
-                            decrementPriority();
+                            kernalProcess.timeOutStrikes++;
+                            if(kernalProcess.timeOutStrikes == 5)
+                            {
+                                decrementPriority();
+                            }
                         }
+                    }
+                    catch(RescheduleException e)
+                    {
+                        deleteProcess(kernalProcess.processID);
                     }
                 }
             }

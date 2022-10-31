@@ -11,8 +11,9 @@ public class Startup
          * Goodbye World
          */
 
-        OS.GetOS().createProcess(new Pipe1Process(), PriorityEnum.RealTime);
-        OS.GetOS().createProcess(new Pipe2Process(), PriorityEnum.RealTime);
+        //OS.GetOS().createProcess(new Pipe1Process(), PriorityEnum.RealTime);
+        //OS.GetOS().createProcess(new Pipe2Process(), PriorityEnum.RealTime);
+        OS.GetOS().createProcess(new TestDevices(), PriorityEnum.RealTime);
         //OS.GetOS().createProcess(new RandomProcess(), PriorityEnum.RealTime);
 
         OS.GetOS().run();
