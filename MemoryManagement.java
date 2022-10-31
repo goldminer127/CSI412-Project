@@ -1,5 +1,7 @@
 import java.util.BitSet;
 
+import javax.lang.model.util.ElementScanner14;
+
 public class MemoryManagement implements MemoryInterface
 {
     public byte[][] physicalPages = new byte[1024][1024];
@@ -15,7 +17,7 @@ public class MemoryManagement implements MemoryInterface
 
     public void writeMemory(int address, byte value) throws RescheduleException
     {
-        if(tlbVirtual == -1 || tlbPhysical == -1)
+        if(tlbVirtual == -1)
         {
             mapTLB(address);
         }
@@ -23,13 +25,20 @@ public class MemoryManagement implements MemoryInterface
         {
             mapTLB(address);
         }
-        int offset = address % 1024;
-        physicalPages[tlbPhysical][offset] = value;
+        if(tlbPhysical == -1)
+        {
+            throw new RescheduleException();
+        }
+        else
+        {
+            int offset = address % 1024;
+            physicalPages[tlbPhysical][offset] = value;
+        }
     }
 
     public byte readMemory(int address) throws RescheduleException
     {
-        if(tlbVirtual == -1 || tlbPhysical == -1)
+        if(tlbVirtual == -1)
         {
             mapTLB(address);
         }
@@ -37,8 +46,15 @@ public class MemoryManagement implements MemoryInterface
         {
             mapTLB(address);
         }
-        int offset = address % 1024;
-        return physicalPages[tlbPhysical][offset];
+        if(tlbVirtual == -1)
+        {
+            throw new RescheduleException();
+        }
+        else
+        {
+            int offset = address % 1024;
+            return physicalPages[tlbPhysical][offset];
+        }
     }
 
     public void mapTLB(int address) throws RescheduleException
