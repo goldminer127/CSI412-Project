@@ -2,6 +2,7 @@ public class OS implements OSInterface
 {
     private static OS osInstance = null;
     PriorityScheduler scheduler = new PriorityScheduler();
+    MemoryManagement memoryManagement = new MemoryManagement();
 
     /* Makes OS Singleton */
     private OS()
@@ -20,10 +21,12 @@ public class OS implements OSInterface
 
     public int createProcess(UserlandProcess process, PriorityEnum priority)
     {
+
         return scheduler.createProcess(process, priority);
     }
     public boolean deleteProcess(int processId)
     {
+        
         return scheduler.deleteProcess(processId);
     }
     public void sleep(int milliseconds)
@@ -70,5 +73,20 @@ public class OS implements OSInterface
     public int write(int id, byte[] data)
     {
         return VFS.getVFS().write(id, data);
+    }
+
+    public void writeMemory(int address, byte value) throws RescheduleException
+    {
+        memoryManagement.writeMemory(address, value);
+    }
+
+    public byte readMemory(int address) throws RescheduleException
+    {
+        return memoryManagement.readMemory(address);
+    }
+
+    public int sbrk(int amount)
+    {
+        return memoryManagement.sbrk(amount);
     }
 }
