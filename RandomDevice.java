@@ -51,10 +51,7 @@ public class RandomDevice implements Device
         if(randomDevices[id] != null)
         {
             byte[] arr = new byte[size];
-            for(int i = 0; i < size; i++)
-            {
-                arr[i] = (byte)randomDevices[id].nextInt();
-            }
+            randomDevices[id].nextBytes(arr);
             return arr;
         }
         return null;

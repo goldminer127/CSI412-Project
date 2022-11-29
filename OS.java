@@ -1,8 +1,8 @@
 public class OS implements OSInterface
 {
     private static OS osInstance = null;
-    PriorityScheduler scheduler = new PriorityScheduler();
-    MemoryManagement memoryManagement = new MemoryManagement();
+    PriorityScheduler scheduler = new PriorityScheduler();;
+    MemoryManagement memoryManagement = new MemoryManagement();;
 
     /* Makes OS Singleton */
     private OS()

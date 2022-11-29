@@ -13,8 +13,13 @@ public class Startup
 
         //OS.GetOS().createProcess(new Pipe1Process(), PriorityEnum.RealTime);
         //OS.GetOS().createProcess(new Pipe2Process(), PriorityEnum.RealTime);
+        OS.GetOS().createProcess(new VictimProcess(), PriorityEnum.RealTime);
         OS.GetOS().createProcess(new TestDevices(), PriorityEnum.RealTime);
         //OS.GetOS().createProcess(new RandomProcess(), PriorityEnum.RealTime);
+
+        /* PLEASE READ FOR PROJECT 6
+        There are some print statements in memory management to help you visualize what is happening.
+        */
 
         OS.GetOS().run();
     }
