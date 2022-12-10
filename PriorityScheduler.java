@@ -78,6 +78,7 @@ public class PriorityScheduler
         if(process != null)
         {
             OS.GetOS().memoryManagement.freeMemory(process);
+            OS.GetOS().mutexManager.deleteProcessFromMutex();
             switch(process.priority)
             {
                 case RealTime:
@@ -147,7 +148,6 @@ public class PriorityScheduler
         if(realtimeProcesses.size() > 0)
         {
             bound = 10;
-            //System.out.println("Bound chosen " + bound);
             int priorityChoice = rand.nextInt(bound);
             if(priorityChoice < 6)
             {
@@ -165,7 +165,6 @@ public class PriorityScheduler
         else
         {
             bound = 4;
-            //System.out.println("Bound chosen " + bound);
             int priorityChoice = rand.nextInt(bound);
             if(priorityChoice < 3)
             {
@@ -205,7 +204,7 @@ public class PriorityScheduler
                 {
                     //If statements will be removed in the future
                     case RealTime:
-                    if(realtimeProcesses.size() == 0)
+                    if(realtimeProcesses.size() <= 0 || realtimeTracker < 0)
                     {
                         break;
                     }
@@ -217,7 +216,7 @@ public class PriorityScheduler
                     }
                     break;
                     case Interactive:
-                    if(interactiveProcesses.size() == 0)
+                    if(interactiveProcesses.size() <= 0 || interactiveTracker < 0)
                     {
                         break;
                     }
@@ -229,7 +228,7 @@ public class PriorityScheduler
                     }
                     break;
                     case Background:
-                    if(backgroundProcesses.size() == 0)
+                    if(backgroundProcesses.size() <= 0 || backgroundTracker < 0)
                     {
                         break;
                     }

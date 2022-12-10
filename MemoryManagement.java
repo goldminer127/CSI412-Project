@@ -3,6 +3,7 @@ import java.util.Random;
 
 public class MemoryManagement implements MemoryInterface
 {
+    private static MemoryManagement memoryManagement = null;
     public byte[][] physicalPages = new byte[1024][1024];
     public BitSet freeList = new BitSet(1024);
     public int tlbVirtual = -1;
@@ -11,9 +12,18 @@ public class MemoryManagement implements MemoryInterface
     public int diskPage = 0;
     public int disk;
 
-    public MemoryManagement()
+    private MemoryManagement()
     {
         disk = FakeFileSystem.getFileSystem().open("disk");
+    }
+
+    public static MemoryManagement getMemoryManagement()
+    {
+        if(memoryManagement == null)
+        {
+            memoryManagement = new MemoryManagement();
+        }
+        return memoryManagement;
     }
 
     public void writeMemory(int address, byte value) throws RescheduleException
@@ -154,7 +164,6 @@ public class MemoryManagement implements MemoryInterface
     
     public void freeMemory(KernelandProcess process)
     {
-        System.out.println("Deleting: " + process.processID);
         VirtualToPhysicalMapping[] vMemory = process.virtualMemory;
         for(int i = 0; i < vMemory.length; i++)
         {
