@@ -2,7 +2,8 @@ public class OS implements OSInterface
 {
     private static OS osInstance = null;
     PriorityScheduler scheduler = new PriorityScheduler();
-    MemoryManagement memoryManagement = new MemoryManagement();
+    MemoryManagement memoryManagement = MemoryManagement.getMemoryManagement();
+    MutexManager mutexManager = MutexManager.getMutexManager();
 
     /* Makes OS Singleton */
     private OS()
@@ -59,7 +60,7 @@ public class OS implements OSInterface
     }
     public void close(int id)
     {
-        scheduler.runningProcess.vfsId.remove(new Integer(id));
+        scheduler.runningProcess.vfsId.remove(Integer.valueOf(id));
         VFS.getVFS().close(id);
     }
     public byte[] read(int id, int size)
@@ -88,5 +89,22 @@ public class OS implements OSInterface
     public int sbrk(int amount)
     {
         return memoryManagement.sbrk(amount);
+    }
+
+    public int attachToMutex(String name)
+    {
+        return mutexManager.attachToMutex(name);
+    }
+    public boolean lock(int mutexId)
+    {
+        return mutexManager.lock(mutexId);
+    }
+    public void unlock(int mutexId)
+    {
+        mutexManager.unlock(mutexId);
+    }
+    public void releaseMutex(int mutexId)
+    {
+        mutexManager.releaseMutex(mutexId);
     }
 }

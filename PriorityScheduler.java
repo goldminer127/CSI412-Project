@@ -9,10 +9,10 @@ public class PriorityScheduler
     public HashMap<Integer, KernelandProcess> backgroundProcesses = new HashMap<Integer,KernelandProcess>();
     public ArrayList<KernelandProcess> sleepingProcesses = new ArrayList<KernelandProcess>();
 
-    //Increments by 1 every new process. Will never repeat an ID
     public int realtimeTracker;
     public int interactiveTracker;
     public int backgroundTracker;
+    //Increments by 1 every new process. Will never repeat an ID
     public int processIDTracker;
     public KernelandProcess runningProcess;
 
@@ -25,32 +25,23 @@ public class PriorityScheduler
         processIDTracker++;
         return kernelProcess.processID;
     }
-    public boolean deleteProcess(int processID)
+    public KernelandProcess getProcessById(int processID)
     {
         if(realtimeProcesses.get(processID) != null)
         {
-            OS.GetOS().memoryManagement.freeMemory(realtimeProcesses.get(processID));
-            removeDevices(realtimeProcesses.get(processID));
-            realtimeProcesses.remove(processID);
-            return true;
+            return realtimeProcesses.get(processID);
         }
         else
         {
             if(interactiveProcesses.get(processID) != null)
             {
-                OS.GetOS().memoryManagement.freeMemory(realtimeProcesses.get(processID));
-                removeDevices(interactiveProcesses.get(processID));
-                interactiveProcesses.remove(processID);
-                return true;
+                return interactiveProcesses.get(processID);
             }
             else
             {
                 if(backgroundProcesses.get(processID) != null)
                 {
-                    OS.GetOS().memoryManagement.freeMemory(realtimeProcesses.get(processID));
-                    removeDevices(backgroundProcesses.get(processID));
-                    backgroundProcesses.remove(processID);
-                    return true;
+                    return backgroundProcesses.get(processID);
                 }
                 else
                 {
@@ -61,17 +52,53 @@ public class PriorityScheduler
                         {
                             if(kernelandProcess.processID == processID)
                             {
-                                OS.GetOS().memoryManagement.freeMemory(kernelandProcess);
-                                removeDevices(sleepingProcesses.get(processID));
-                                sleepingProcesses.remove(kernelandProcess);
-                                return true;
+                                return sleepingProcesses.get(processID);
                             }
                         }
                     }
-                    return false;
+                    return null;
                 }
             }
         }
+    }
+    //Look into useing .putAll() for hashmaps
+    public KernelandProcess getRandomProcess()
+    {
+        Random rand = new Random();
+        KernelandProcess process = null;
+        while(process == null)
+        {
+            process = OS.GetOS().scheduler.getProcessById(rand.nextInt(OS.GetOS().scheduler.processIDTracker));
+        }
+        return process;
+    }
+    public boolean deleteProcess(int processID)
+    {
+        KernelandProcess process = getProcessById(processID);
+        if(process != null)
+        {
+            OS.GetOS().memoryManagement.freeMemory(process);
+            OS.GetOS().mutexManager.deleteProcessFromMutex();
+            switch(process.priority)
+            {
+                case RealTime:
+                    realtimeTracker--;
+                    realtimeProcesses.remove(processID);
+                    break;
+                case Interactive:
+                    interactiveTracker--;
+                    interactiveProcesses.remove(processID);
+                    break;
+                case Background:
+                    backgroundTracker--;
+                    backgroundProcesses.remove(processID);
+                    break;
+                default:
+                    sleepingProcesses.remove(processID);
+            }
+            return true;
+        }
+        return false;
     }
     public void removeDevices(KernelandProcess kernelandProcess)
     {
@@ -121,7 +148,6 @@ public class PriorityScheduler
         if(realtimeProcesses.size() > 0)
         {
             bound = 10;
-            //System.out.println("Bound chosen " + bound);
             int priorityChoice = rand.nextInt(bound);
             if(priorityChoice < 6)
             {
@@ -139,7 +165,6 @@ public class PriorityScheduler
         else
         {
             bound = 4;
-            //System.out.println("Bound chosen " + bound);
             int priorityChoice = rand.nextInt(bound);
             if(priorityChoice < 3)
             {
@@ -179,7 +204,7 @@ public class PriorityScheduler
                 {
                     //If statements will be removed in the future
                     case RealTime:
-                    if(realtimeProcesses.size() == 0)
+                    if(realtimeProcesses.size() <= 0 || realtimeTracker < 0)
                     {
                         break;
                     }
@@ -191,7 +216,7 @@ public class PriorityScheduler
                     }
                     break;
                     case Interactive:
-                    if(interactiveProcesses.size() == 0)
+                    if(interactiveProcesses.size() <= 0 || interactiveTracker < 0)
                     {
                         break;
                     }
@@ -203,7 +228,7 @@ public class PriorityScheduler
                     }
                     break;
                     case Background:
-                    if(backgroundProcesses.size() == 0)
+                    if(backgroundProcesses.size() <= 0 || backgroundTracker < 0)
                     {
                         break;
                     }
@@ -218,7 +243,8 @@ public class PriorityScheduler
                 if(kernalProcess != null)
                 {
                     /* Test delete function
-                    if(processIDTracker == 3)
+                    System.out.println(processIDTracker);
+                    if(processIDTracker == 2)
                     {
                         System.out.println("purge");
                         for(int i = 0; i < processIDTracker; i++)
@@ -228,7 +254,7 @@ public class PriorityScheduler
                     }
                     */
                     OS.GetOS().memoryManagement.tlbVirtual = -1;
-                    OS.GetOS().memoryManagement.tlbVirtual = -1;
+                    OS.GetOS().memoryManagement.tlbPhysical = -1;
                     runningProcess = kernalProcess;
                     try
                     {
