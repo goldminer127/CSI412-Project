@@ -123,6 +123,11 @@ public class MemoryManagement implements MemoryInterface
             process.virtualMemory[virtual].isDirty = false;
             process.virtualMemory[virtual].physicalPage = -1;
         }
+
+        for(int i = 0; i < physicalPages[process.virtualMemory[virtual].physicalPage].length; i++)
+        {
+            physicalPages[process.virtualMemory[virtual].physicalPage][i] = 0;
+        }
         //Used to debug, shows which process is being stolen from, what process is running and what page is being stolen.
         //System.out.println(process.processID + " , Running: " + OS.GetOS().scheduler.runningProcess.processID + "; Page: " + physicalPage);
         return physicalPage;
